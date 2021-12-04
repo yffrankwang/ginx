@@ -107,6 +107,7 @@ func dumpResponse(w io.Writer, id string, dw *dumpWriter) {
 	bb.WriteString(eol)
 
 	// http response
+	dw.res.StatusCode = dw.ResponseWriter.Status()
 	dw.res.Header = dw.ResponseWriter.Header()
 	dw.res.Body = ioutil.NopCloser(dw.bb)
 	dw.res.Write(bb)
@@ -121,11 +122,6 @@ type dumpWriter struct {
 	gin.ResponseWriter
 	res *http.Response
 	bb  *bytes.Buffer
-}
-
-func (dw *dumpWriter) WriteHeader(statusCode int) {
-	dw.res.StatusCode = statusCode
-	dw.ResponseWriter.WriteHeader(statusCode)
 }
 
 func (dw *dumpWriter) Write(data []byte) (int, error) {
