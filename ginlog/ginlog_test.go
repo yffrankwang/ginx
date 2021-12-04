@@ -17,18 +17,25 @@ func init() {
 	gin.SetMode(gin.ReleaseMode)
 }
 
+func performRequest(r http.Handler, method, path string) *httptest.ResponseRecorder {
+	req := httptest.NewRequest(method, path, nil)
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	return w
+}
+
 func assertContains(t *testing.T, msg string, body string, ss ...string) {
 	for _, s := range ss {
 		if !str.Contains(body, s) {
-			t.Errorf(`%s response body not contains %q`, msg, s)
+			t.Errorf(`%s access log does not contains %q`, msg, s)
 		}
 	}
 }
 
 func TestTextLog(t *testing.T) {
-	buffer := new(bytes.Buffer)
 	router := gin.New()
 
+	buffer := new(bytes.Buffer)
 	writer := io.MultiWriter(buffer, os.Stdout)
 	router.Use(New(writer, DefaultTextLogFormat).Handler())
 
@@ -128,11 +135,4 @@ func TestJSONLog(t *testing.T) {
 	performRequest(router, "GET", "/notfound")
 	json.Unmarshal(buffer.Bytes(), &result)
 	assertJsonResult(t, result, 404, "GET", "/notfound")
-}
-
-func performRequest(r http.Handler, method, path string) *httptest.ResponseRecorder {
-	req := httptest.NewRequest(method, path, nil)
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
-	return w
 }
