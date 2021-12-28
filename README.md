@@ -13,8 +13,8 @@ Pango GINX is a GO development utility library for [GIN](https://github.com/gin-
 | [ginfile](#ginfile)   | a static file handler with Cache-Control header support for gin |
 | [gingzip](#gingzip)   | a gzip encoding support middleware for gin                      |
 | [ginhtml](#ginhtml)   | a html template engine for gin                                  |
+| [gini18n](#gini18n)   | a localizer middleware for gin                              |
 | [ginlog](#ginlog)     | a access logger middleware for gin                              |
-
 
 ## Install:
 
@@ -320,4 +320,63 @@ func main() {
 Output:
 ```
 2021-12-04T14:30:30.840	200	0	-1	127.0.0.1	127.0.0.1:1234		GET	example.com	/example?a=100
+```
+
+
+## gini18n
+A localizer middleware for gin.
+
+### Example:
+
+```golang
+import (
+	"context"
+	"net/http"
+	"os"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/pandafw/pango-ginx/gini18n"
+)
+
+func main() {
+	gin.SetMode(gin.ReleaseMode)
+
+	router := gin.New()
+	router.Use(gini18n.NewLocalizer("ja", "zh", "en").Handler())
+
+	router.Any("/example", func(c *gin.Context) {
+		locale := gini18n.GetLocale(c)
+		c.String(http.StatusOK, locale)
+	})
+
+	server := &http.Server{
+		Addr:    "127.0.0.1:8888",
+		Handler: router,
+	}
+
+	go func() {
+		server.ListenAndServe()
+	}()
+
+	time.Sleep(time.Millisecond * 100)
+
+	req, _ := http.NewRequest("GET", "http://127.0.0.1:8888/example?a=100&__locale=ja", nil)
+	req.Header.Add("Accept-Languages", "ja;zh")
+
+	client := &http.Client{Timeout: time.Second * 1}
+	res, _ := client.Do(req)
+
+	raw, _ := ioutil.ReadAll(res.Body)
+	fmt.Println(string(raw))
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	server.Shutdown(ctx)
+}
+```
+
+Output:
+```
+ja
 ```
