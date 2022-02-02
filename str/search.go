@@ -6,14 +6,13 @@ import (
 )
 
 // CountRune counts the number of non-overlapping instances of rune c in s.
-func CountRune(s string, c rune) int {
-	n := 0
+func CountRune(s string, c rune) (n int) {
 	for _, r := range s {
 		if r == c {
 			n++
 		}
 	}
-	return n
+	return
 }
 
 // CountAny counts the number of non-overlapping instances of any character of chars in s.
@@ -117,12 +116,12 @@ func EndsWith(s, suffix string) bool {
 
 // StartsWithFold Tests if the string s starts with the specified prefix (case insensitive).
 func StartsWithFold(s, prefix string) bool {
-	return StartsWithFold(s, prefix)
+	return HasSuffixFold(s, prefix)
 }
 
 // EndsWithFold Tests if the string s ends with the specified suffix (case insensitive).
 func EndsWithFold(s, suffix string) bool {
-	return EndsWithFold(s, suffix)
+	return HasSuffixFold(s, suffix)
 }
 
 // StartsWithByte Tests if the byte slice s starts with the specified prefix b.

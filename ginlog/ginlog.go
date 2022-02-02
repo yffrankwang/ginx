@@ -97,7 +97,7 @@ func (log *Logger) handle(c *gin.Context) {
 		s := f(p)
 		bb.WriteString(s)
 	}
-	w.Write(bb.Bytes())
+	w.Write(bb.Bytes()) //nolint: errcheck
 }
 
 // SetOutput set the access log output writer
@@ -160,8 +160,9 @@ func parseTextFormat(format string) []fmtfunc {
 			p := getFormatOption(format, &i)
 			if p != "" {
 				fmt = requestHeader(p)
+			} else {
+				fmt = requestHost
 			}
-			fmt = requestHost
 		case 't':
 			p := getFormatOption(format, &i)
 			if p == "" {
@@ -371,10 +372,6 @@ func requestMethod(p *param) string {
 
 func requestQuery(p *param) string {
 	return p.Ctx.Request.URL.RawQuery
-}
-
-func requestPath(p *param) string {
-	return p.Ctx.Request.URL.Path
 }
 
 func requestHeader(name string) fmtfunc {

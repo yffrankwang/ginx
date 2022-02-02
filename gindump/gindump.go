@@ -1,5 +1,6 @@
 package gindump
 
+//nolint: gosec
 import (
 	"bytes"
 	"crypto/sha1"
@@ -73,11 +74,10 @@ const eol = "\r\n"
 func dumpRequest(w io.Writer, req *http.Request) string {
 	bs, _ := httputil.DumpRequest(req, true)
 
-	id := fmt.Sprintf("%x", sha1.Sum(bs))
+	id := fmt.Sprintf("%x", sha1.Sum(bs)) //nolint: gosec
 
 	bb := &bytes.Buffer{}
 
-	// Seperate Line
 	bb.WriteString(fmt.Sprintf(">>>>>>>> %s %s >>>>>>>>", time.Now().Format(defaultTimeFormat), id))
 	bb.WriteString(eol)
 	if len(bs) > 0 {
@@ -86,8 +86,7 @@ func dumpRequest(w io.Writer, req *http.Request) string {
 	bb.WriteString(eol)
 	bb.WriteString(eol)
 
-	// dump
-	w.Write(bb.Bytes())
+	w.Write(bb.Bytes()) //nolint: errcheck
 
 	return id
 }
@@ -95,20 +94,17 @@ func dumpRequest(w io.Writer, req *http.Request) string {
 func dumpResponse(w io.Writer, id string, dw *dumpWriter) {
 	bb := &bytes.Buffer{}
 
-	// Seperate Line
 	bb.WriteString(fmt.Sprintf("<<<<<<<< %s %s <<<<<<<<", time.Now().Format(defaultTimeFormat), id))
 	bb.WriteString(eol)
 
-	// http response
 	dw.res.StatusCode = dw.ResponseWriter.Status()
 	dw.res.Header = dw.ResponseWriter.Header()
 	dw.res.Body = ioutil.NopCloser(dw.bb)
-	dw.res.Write(bb)
+	dw.res.Write(bb) //nolint: errcheck
 	bb.WriteString(eol)
 	bb.WriteString(eol)
 
-	// dump
-	w.Write(bb.Bytes())
+	w.Write(bb.Bytes()) //nolint: errcheck
 }
 
 type dumpWriter struct {

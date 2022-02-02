@@ -31,7 +31,7 @@ type gzipWriter struct {
 func (g *gzipWriter) Close() {
 	g.WriteHeaderNow()
 	if g.buf.Len() > 0 {
-		g.ResponseWriter.Write(g.buf.Bytes())
+		g.ResponseWriter.Write(g.buf.Bytes()) //nolint: errcheck
 		g.buf.Reset()
 	} else {
 		g.gzw.Flush()
@@ -125,7 +125,7 @@ func (g *gzipWriter) checkBuffer(data []byte) {
 	g.modifyHeader()
 	g.gzw.Reset(g.ResponseWriter)
 	if g.buf.Len() > 0 {
-		g.gzw.Write(g.buf.Bytes())
+		g.gzw.Write(g.buf.Bytes()) //nolint: errcheck
 		g.buf.Reset()
 	}
 	g.state = stateGzip
