@@ -6,14 +6,12 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/pandafw/pango/iox"
-	"github.com/pandafw/pango/log"
-	"github.com/pandafw/pango/net/httpx"
 )
 
 // DefaultTimeFormat default log time format
@@ -40,12 +38,6 @@ type param struct {
 }
 
 type fmtfunc func(p *param) string
-
-// Default create a default log
-// Equals to: New(log.Outputer("GIN", log.LevelTrace), DefaultTextLogFormt)
-func Default() *Logger {
-	return New(log.Outputer("GIN", log.LevelTrace), DefaultTextLogFormat)
-}
 
 // New create a log middleware for gin access log
 // Access Log Format:
@@ -317,8 +309,27 @@ func timefmtc(layout string) fmtfunc {
 	}
 }
 
+// CR "\r"
+const CR = "\r"
+
+// LF "\n"
+const LF = "\n"
+
+// CRLF "\r\n"
+const CRLF = "\r\n"
+
+// EOL windows: "\r\n" other: "\n"
+var EOL = geteol()
+
+func geteol() string {
+	if runtime.GOOS == "windows" {
+		return CRLF
+	}
+	return LF
+}
+
 func eolfmt(p *param) string {
-	return iox.EOL
+	return EOL
 }
 
 func latency(p *param) string {
@@ -326,7 +337,7 @@ func latency(p *param) string {
 }
 
 func clientIP(p *param) string {
-	return httpx.GetClientIP(p.Ctx.Request)
+	return p.Ctx.ClientIP()
 }
 
 func remoteAddr(p *param) string {

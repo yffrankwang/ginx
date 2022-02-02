@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/pandafw/pango/str"
+	"github.com/yffrankwang/ginx/str"
 )
 
 const (
@@ -65,7 +65,7 @@ func (g *gzipWriter) checkHeader() {
 
 	if g.zipper.mimeTypes != nil {
 		ct := str.SubstrBeforeByte(h.Get("Content-Type"), ';')
-		if !g.zipper.mimeTypes.Contains(ct) {
+		if _, ok := g.zipper.mimeTypes[ct]; !ok {
 			g.state = stateSkip
 			return
 		}

@@ -8,8 +8,7 @@ import (
 	"sync"
 
 	"github.com/gin-gonic/gin"
-	"github.com/pandafw/pango/col"
-	"github.com/pandafw/pango/str"
+	"github.com/yffrankwang/ginx/str"
 )
 
 // http://nginx.org/en/docs/http/ngx_http_gzip_module.html
@@ -50,7 +49,7 @@ type Zipper struct {
 	compressLevel int
 
 	// mimeTypes Enables gzipping of responses for the specified MIME types.
-	mimeTypes *col.HashSet
+	mimeTypes map[string]bool
 
 	// ignorePathPrefixs Ignored URL Path Prefixs
 	ignorePathPrefixs prefixs
@@ -178,8 +177,11 @@ func (z *Zipper) SetMimeTypes(mts ...string) {
 		return
 	}
 
-	hs := col.NewStringHashSet(mts...)
-	if hs.Contains("*") {
+	hs := map[string]bool{}
+	for _, mt := range mts {
+		hs[mt] = true
+	}
+	if _, ok := hs["*"]; ok {
 		hs = nil
 	}
 	z.mimeTypes = hs

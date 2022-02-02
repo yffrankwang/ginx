@@ -11,7 +11,7 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/pandafw/pango/str"
+	"github.com/yffrankwang/ginx/str"
 )
 
 func init() {

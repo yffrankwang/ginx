@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/pandafw/pango/str"
 )
 
 func init() {
@@ -26,7 +26,7 @@ func performRequest(r http.Handler, method, path string) *httptest.ResponseRecor
 
 func assertContains(t *testing.T, msg string, body string, ss ...string) {
 	for _, s := range ss {
-		if !str.Contains(body, s) {
+		if !strings.Contains(body, s) {
 			t.Errorf(`%s access log does not contains %q`, msg, s)
 		}
 	}

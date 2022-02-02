@@ -4,17 +4,16 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin/render"
-	"github.com/pandafw/pango/tpl"
 )
 
 // Engine html engine for gin
 type Engine struct {
-	*tpl.HTMLTemplate
+	*HTMLTemplates
 }
 
 // NewEngine create a html engine for gin
 func NewEngine() *Engine {
-	return &Engine{tpl.NewHTMLTemplate()}
+	return &Engine{NewHTMLTemplates()}
 }
 
 // Render view render implement gin interface

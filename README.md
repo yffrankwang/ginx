@@ -1,11 +1,11 @@
- Pango GINX
+ GINX
 =====================================================================
 
-![](https://github.com/pandafw/pango/raw/master/logo.png) [![Build Status](https://travis-ci.com/pandafw/pango-ginx.svg?branch=master)](https://travis-ci.com/pandafw/pango-ginx) [![codecov](https://codecov.io/gh/pandafw/pango-ginx/branch/master/graph/badge.svg)](https://codecov.io/gh/pandafw/pango-ginx) [![Apache 2](https://img.shields.io/badge/license-Apache%202-green)](https://www.apache.org/licenses/LICENSE-2.0.html) ![](https://github.com/pandafw/pango/raw/master/logo.png)
+[![Build Status](https://travis-ci.com/yffrankwang/ginx.svg?branch=master)](https://travis-ci.com/yffrankwang/ginx) [![codecov](https://codecov.io/gh/yffrankwang/ginx/branch/master/graph/badge.svg)](https://codecov.io/gh/yffrankwang/ginx) [![Apache 2](https://img.shields.io/badge/license-Apache%202-green)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 
 
-Pango GINX is a GO development utility library for [GIN](https://github.com/gin-gonic/gin).
+GINX is a GO development utility library for [GIN](https://github.com/gin-gonic/gin).
 
 | **Package**           | **Description**                         |
 | :-------------------- | :-------------------------------------- |
@@ -18,7 +18,7 @@ Pango GINX is a GO development utility library for [GIN](https://github.com/gin-
 
 ## Install:
 
-	go get github.com/pandafw/pango-ginx
+	go get github.com/yffrankwang/ginx
 
 
 ## gindump
@@ -35,7 +35,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/pandafw/pango-ginx/gindump"
+	"github.com/yffrankwang/ginx/gindump"
 )
 
 func main() {
@@ -100,7 +100,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/pandafw/pango-ginx/ginfile"
+	"github.com/yffrankwang/ginx/ginfile"
 )
 
 //go:embed testdata
@@ -158,7 +158,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/pandafw/pango-ginx/gingzip"
+	"github.com/yffrankwang/ginx/gingzip"
 )
 
 func main() {
@@ -283,7 +283,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/pandafw/pango-ginx/ginlog"
+	"github.com/yffrankwang/ginx/ginlog"
 )
 
 func main() {
@@ -336,7 +336,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/pandafw/pango-ginx/gini18n"
+	"github.com/yffrankwang/ginx/gini18n"
 )
 
 func main() {

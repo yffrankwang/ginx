@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/pandafw/pango/log"
 )
 
 const defaultTimeFormat = "2006-01-02T15:04:05.000"
@@ -20,12 +19,6 @@ const defaultTimeFormat = "2006-01-02T15:04:05.000"
 type Dumper struct {
 	outputer io.Writer
 	disabled bool
-}
-
-// Default create a default http dumper
-// Equals to: New(log.Outputer("HTTP", log.LevelTrace))
-func Default() *Dumper {
-	return New(log.Outputer("HTTP", log.LevelTrace))
 }
 
 // New create a log middleware for gin http dumper

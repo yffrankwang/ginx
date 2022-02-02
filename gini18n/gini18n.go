@@ -1,8 +1,9 @@
 package gini18n
 
 import (
+	"strings"
+
 	"github.com/gin-gonic/gin"
-	"github.com/pandafw/pango/str"
 )
 
 // ContextKey default context key
@@ -101,7 +102,9 @@ func (ll *Localizer) handle(c *gin.Context) {
 
 func (ll *Localizer) getLocaleFromHeader(c *gin.Context, k string) string {
 	loc := c.GetHeader(k)
-	qls := str.SplitAny(loc, ",; ")
+	qls := strings.FieldsFunc(loc, func(r rune) bool {
+		return strings.ContainsRune(",; ", r)
+	})
 	for _, ql := range qls {
 		if ll.acceptable(ql) {
 			return ql
@@ -136,7 +139,7 @@ func (ll *Localizer) getLocaleFromCookie(c *gin.Context, k string) string {
 func (ll *Localizer) acceptable(loc string) bool {
 	if loc != "" {
 		for _, al := range ll.Locales {
-			if str.StartsWith(loc, al) {
+			if strings.HasPrefix(loc, al) {
 				return true
 			}
 		}

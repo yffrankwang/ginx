@@ -3,13 +3,13 @@ package ginfile
 import (
 	"bytes"
 	"net/http"
+	"net/url"
 	"path"
 	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/pandafw/pango/net/httpx"
 )
 
 // Public1Year Cache-Control: public, max-age=31536000
@@ -20,7 +20,67 @@ func getCacheControlWriter(c *gin.Context, cacheControl string) http.ResponseWri
 		return c.Writer
 	}
 	h := map[string]string{"Cache-Control": cacheControl}
-	return httpx.NewHeaderAppender(c.Writer, h)
+	return &headerWriter{c.Writer, h}
+}
+
+// headerWriter write header when statusCode == 200 on WriteHeader(statusCode int)
+// a existing header will not be overwriten.
+type headerWriter struct {
+	http.ResponseWriter
+	header map[string]string
+}
+
+// WriteHeader append header when statusCode == 200
+func (hw *headerWriter) WriteHeader(statusCode int) {
+	if statusCode == http.StatusOK {
+		for k, v := range hw.header {
+			if hw.Header().Get(k) == "" {
+				hw.Header().Add(k, v)
+			}
+		}
+	}
+	hw.ResponseWriter.WriteHeader(statusCode)
+}
+
+// AppendPrefix returns a handler that serves HTTP requests by appending the
+// given prefix from the request URL's Path (and RawPath if set) and invoking
+// the handler hh.
+func appendPrefix(prefix string, hh http.Handler) http.Handler {
+	if prefix == "" {
+		return hh
+	}
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		p := prefix + r.URL.Path
+		rp := prefix + r.URL.RawPath
+		r2 := new(http.Request)
+		*r2 = *r
+		r2.URL = new(url.URL)
+		*r2.URL = *r.URL
+		r2.URL.Path = p
+		r2.URL.RawPath = rp
+		hh.ServeHTTP(w, r2)
+	})
+}
+
+// URLReplace returns a handler that serves HTTP requests by replacing the
+// request URL's Path (and RawPath if set) (use strings.Replace(path, src, des) and invoking
+// the handler hh.
+func urlReplace(src, des string, hh http.Handler) http.Handler {
+	if src == "" || src == des {
+		return hh
+	}
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		p := strings.Replace(r.URL.Path, src, des, 1)
+		rp := strings.Replace(r.URL.RawPath, src, des, 1)
+		r2 := new(http.Request)
+		*r2 = *r
+		r2.URL = new(url.URL)
+		*r2.URL = *r.URL
+		r2.URL.Path = p
+		r2.URL.RawPath = rp
+		hh.ServeHTTP(w, r2)
+	})
 }
 
 // Static serves files from the given file system root.
@@ -52,11 +112,11 @@ func StaticFS(g *gin.RouterGroup, relativePath string, localPath string, hfs htt
 	prefix := path.Join(g.BasePath(), relativePath)
 	fileServer := http.FileServer(hfs)
 	if prefix == "" || prefix == "/" {
-		fileServer = httpx.AppendPrefix(localPath, fileServer)
+		fileServer = appendPrefix(localPath, fileServer)
 	} else if localPath == "" || localPath == "." {
 		fileServer = http.StripPrefix(prefix, fileServer)
 	} else {
-		fileServer = httpx.URLReplace(prefix, localPath, fileServer)
+		fileServer = urlReplace(prefix, localPath, fileServer)
 	}
 
 	handler := func(c *gin.Context) {
