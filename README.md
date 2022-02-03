@@ -1,7 +1,7 @@
  GINX
 =====================================================================
 
-[![Build Status](https://travis-ci.com/yffrankwang/ginx.svg?branch=master)](https://travis-ci.com/yffrankwang/ginx) [![codecov](https://codecov.io/gh/yffrankwang/ginx/branch/master/graph/badge.svg)](https://codecov.io/gh/yffrankwang/ginx) [![Apache 2](https://img.shields.io/badge/license-Apache%202-green)](https://www.apache.org/licenses/LICENSE-2.0.html)
+[![Build Status](https://github.com/yffrankwang/ginx/actions/workflows/ci.yml/badge.svg)](https://github.com/yffrankwang/ginx/actions?query=branch%3Amaster) [![codecov](https://codecov.io/gh/yffrankwang/ginx/branch/master/graph/badge.svg)](https://codecov.io/gh/pandafw/pango) [![MIT](https://img.shields.io/badge/license-MIT-green)](https://opensource.org/licenses/MIT)
 
 
 
